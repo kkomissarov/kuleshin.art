@@ -1,0 +1,8 @@
+project/venv*
+project/.idea*
+/venv*
+venv
+/logs*
+logs
+/deployment*
+deployment

@@ -1,0 +1,27 @@
+{%extends 'tatoo/base.html' %}
+
+{% block title %}Авторизация{% endblock title %}
+
+
+{% block content %}
+	<div class="container">
+		<div class="row full-height align-items-center justify-content-center">
+			<div class="col-12 col-md-6">
+				<div class="form-wrapper">
+					<form action="{% url 'login_view' %}" method="post">
+						<h1>Авторизация</h1>
+						{% csrf_token %}
+						{{form}}
+
+						<div class="text-right">
+							<button type="submit" class="btn btn-success">Войти</button>
+			
+						</div>
+
+			 		</form>	
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock content %}

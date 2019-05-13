@@ -1,0 +1,154 @@
+{%extends 'tatoo/base.html' %}
+
+{% block title %}Nikolay Kuleshin Tatoo{% endblock title %}
+
+{% block content %}
+	<header class="container-fluid">
+		
+		
+			<div class="row">
+                
+                <div class="col-12 col-md-6 order-md-1 order-2">
+                	<div class="row justify-content-center infobox align-items-center">
+                		<div class="col-12 col-md-10 main-description">
+                			<h1>Николай Кулешин</h1>
+                			
+                			<p>Татуиролог 2й категории</p>
+
+                			<p>В 2018 году закончил Санкт-Петербургский государственный университет по специальности татуиролог с красным дипломом. Начал свою карьеру на Санкт-Петербургском татустроительном заводе оператором татуировального станка 3 разряда.</p>
+
+                			<ul class="contacts">
+                				<li><i class="fab fa-vk"></i> <a href="#">vk.com/zalupka</a></li>
+                				<li><i class="fab fa-instagram"></i> <a href="#">@zalupka</a></li>
+                				<li><i class="far fa-envelope"></i> <a href="#">zalupka@mail.ru</a></li>
+                				<li><i class="fas fa-mobile-alt"></i> <a href="#">8 (812) 000-00-00</a></li>
+                			</ul>
+                		</div>
+                	</div>	
+                </div>
+
+
+
+             	<div class="col-12 col-md-6 order-md-2 order-1 ava">             		
+             	</div>
+			</div>
+	</header>
+
+	<nav class="container-fluid menu">
+		<div class="row">
+			<div class="col-12 text-center">
+				<button href="#" class="active" data-bounce="works">Готовые работы</button>
+				<button href="#" data-bounce="sketches">Свободные эскизы</button>
+			</div>			
+		</div>
+	</nav>
+
+	
+  	<main class='container-fluid active' id="worksWrapper">
+  		
+     	<div class="row glue active" id="works">
+     		{% for work in works%}
+	   			<div class="col-12 col-md-6 col-lg-4 work-demo">
+	  				<img src="{{work.img.url}}" alt="">
+	  				
+	  				{% if request.user.is_authenticated  %}
+		  				<div class="dark-bg align-items-center justify-content-center">
+		  					<div class="controls">
+		  						<button class="btn btn-primary btn-sm edit-btn" data-element="{{work.id}}">
+		  							<i class="fas fa-edit"></i>
+		  						</button>
+
+		  						<button class="btn btn-danger btn-sm del-btn" data-element="{{work.id}}">
+		  							<i class="fas fa-trash-alt"></i>
+		  						</button>
+		  					</div>	
+		  				</div>
+	  				{% endif %}	
+
+	  			</div>
+  			{% endfor %}
+  		</div>
+
+
+
+  		<div class="row glue" id="sketches"> 
+  			{% for scetch in sketches %}
+	   			<div class="col-12 col-md-6 col-lg-4 work-demo">
+	  				<img src="{{scetch.img.url}}" alt="">
+	  				{% if request.user.is_authenticated  %}
+		  				<div class="dark-bg align-items-center justify-content-center">
+		  					<div class="controls">
+		  						<button class="btn btn-primary btn-sm edit-btn" data-element="{{scetch.id}}">
+		  							<i class="fas fa-edit"></i>
+		  						</button>
+
+		  						<button class="btn btn-danger btn-sm del-btn" data-element="{{scetch.id}}">
+		  							<i class="fas fa-trash-alt"></i>
+		  						</button>
+		  					</div>	
+		  				</div>
+	  				{% endif %}	
+	  			</div>
+  			{% endfor %}
+  		</div>
+
+	</main>
+
+
+	<footer class="container-fluid">
+		<div class="row">
+			<div class="col text-center">2019 © Сделано Константином Комиссаровым за банку хорошего пива</div>
+		</div>
+	</footer>
+	
+	{% if request.user.is_authenticated  %}
+		<!-- Это может увидеть только администратор -->
+		<section class="admin-controls">
+			<button id="add-post" type="button"><i class="fas fa-plus"></i></button>
+			<a id="logout" href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i></a>
+		</section>
+	
+
+
+	<div class="modal-wrapper justify-content-center align-items-center">
+
+		<div id="del-modal" class="custom-modal">
+			<form id="delete-post-form" method="get" action="{% url 'delete_post_view' %}">
+				<h2>Действительно ли Вы хотите <br> удалить этот пост?</h2>
+				<input type="hidden" name="post_id" value="" id="delete-post-id">
+				<button class="btn btn-danger btn-sm" id="del-ok" type="submit">Да</button>
+				<button class="btn btn-secondary btn-sm modal-cancel" type="button">Отмена</button>	
+			</form>
+		</div>
+
+
+		<div id="create-modal" class="custom-modal">
+			<form id="create-post-form" method="post" enctype="multipart/form-data" action="{% url 'create_post_view' %}">
+				<h2>Создать новый пост</h2>
+				{% csrf_token %}
+				{% for field in post_form %}
+					<p>{{ field }}</p>
+				{% endfor %}
+				<button class="btn btn-danger btn-sm" id="create-ok" type="submit">Создать</button>
+				<button class="btn btn-secondary btn-sm modal-cancel" type="button">Отмена</button>	
+			</form>
+		</div>
+
+
+		<div id="update-modal" class="custom-modal">
+			<form id="update-post-form" method="post" enctype="multipart/form-data" action="{% url 'update_post_view' %}">
+				<h2>Обновить  пост</h2>
+				{% csrf_token %}
+				<input type="hidden" name="post_id" value="" id="update-post-id">
+				{% for field in update_form %}
+					<p>{{ field }}</p>
+				{% endfor %}
+				<button class="btn btn-danger btn-sm" id="update-ok" type="submit">Обновить</button>
+				<button class="btn btn-secondary btn-sm modal-cancel" type="button">Отмена</button>	
+			</form>
+		</div>
+		
+	</div>
+	{% endif %}
+
+{% endblock content %}
